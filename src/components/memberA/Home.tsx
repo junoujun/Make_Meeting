@@ -1,4 +1,10 @@
-export default function Home() {
+import type { PageState } from "../../App";
+
+type LoginProps = {
+  setCurrentPage: React.Dispatch<React.SetStateAction<PageState>>;
+};
+
+export default function Home({ setCurrentPage }: LoginProps) {
   return (
     <>
       <div className="Index-Page">
@@ -10,8 +16,12 @@ export default function Home() {
           진짜 놀자!
         </h1>
         <div className="button-box">
-          <button>새로운 약속 잡기</button>
-          <button>코드로 입장하기</button>
+          <button onClick={() => setCurrentPage("Make")}>
+            새로운 약속 잡기
+          </button>
+          <button onClick={() => setCurrentPage("Join")}>
+            코드로 입장하기
+          </button>
         </div>
       </div>
     </>
