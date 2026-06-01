@@ -1,9 +1,18 @@
+import { useState } from "react";
 import Home from "./components/memberA/Home";
+import Join from "./components/memberA/Join";
+import Make from "./components/memberA/Make";
+
+export type PageState = "Home" | "Join" | "Make" | "Bucket_List";
 
 export default function App() {
+  const [currentPage, setCurrentPage] = useState<PageState>("Home");
+
   return (
     <>
-      <Home />
+      {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
+      {currentPage === "Join" && <Join setCurrentPage={setCurrentPage} />}
+      {currentPage === "Make" && <Make setCurrentPage={setCurrentPage} />}
     </>
   );
 }
