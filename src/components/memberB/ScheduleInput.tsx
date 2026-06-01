@@ -69,6 +69,9 @@ export default function ScheduleInput({ roomData, onSubmitSchedule, editingName,
         <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
           약속 조율 중
         </span>
+        <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+          방 코드: {roomData.roomCode}
+        </span>
         <h2 className="text-xl font-extrabold text-slate-800 mt-2">{title}</h2>
         <p className="text-xs text-slate-400 mt-1">
           가능한 날짜를 모두 클릭한 후 제출해 주세요. (중복 선택 가능)
