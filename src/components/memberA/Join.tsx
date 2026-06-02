@@ -12,6 +12,7 @@ export default function Join({ setCurrentPage }: LoginProps) {
       </button>
       <h1>방 입장하기</h1>
       <input type="text"></input>
+      <button>입장하기</button>
     </>
   );
 }
