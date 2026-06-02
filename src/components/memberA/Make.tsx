@@ -1,6 +1,7 @@
 import type { PageState } from "../../App";
 import DateRangeSelector from "./DateRangeSelector";
 import { useState } from "react";
+import type { RoomData } from "../../types";
 
 type LoginProps = {
   setCurrentPage: React.Dispatch<React.SetStateAction<PageState>>;
@@ -12,8 +13,8 @@ type DateRange = {
 };
 
 export default function Make({ setCurrentPage }: LoginProps) {
-  const [medicineName, setMedicineName] = useState("");
-  const [diseaseName, setDiseaseName] = useState("");
+  const [promiseName, setMedicineName] = useState("");
+  const [masterName, setDiseaseName] = useState("");
 
   const [dateRange, setDateRange] = useState<DateRange>({
     startDate: "",
@@ -21,14 +22,40 @@ export default function Make({ setCurrentPage }: LoginProps) {
   });
 
   const handleCreateRoom = () => {
-    const roomData = {
-      medicineName,
-      diseaseName,
-      startDate: dateRange.startDate,
-      endDate: dateRange.endDate,
+    const roomData: RoomData = {
+      roomCode: createRoomCode(),
+      title: promiseName,
+      creatorName: masterName,
+      dateRange: {
+        start: dateRange.startDate,
+        end: dateRange.endDate,
+      },
+      participants: [],
+      bucketList: [],
     };
 
+    localStorage.setItem(roomData.roomCode, JSON.stringify(roomData));
+
     console.log(roomData);
+  };
+
+  const createRoomCode = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    while (true) {
+      let code = "";
+
+      for (let i = 0; i < 4; i++) {
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        code += chars[randomIndex];
+      }
+
+      const savedRoom = localStorage.getItem(code);
+
+      if (savedRoom === null) {
+        return code;
+      }
+    }
   };
 
   return (
@@ -38,22 +65,22 @@ export default function Make({ setCurrentPage }: LoginProps) {
       </button>
       <section>
         <div>
-          <label htmlFor="medicineName">약속 이름: </label>
+          <label htmlFor="promiseName">약속 이름: </label>
           <input
-            id="medicineName"
+            id="promiseName"
             type="text"
-            value={medicineName}
+            value={promiseName}
             onChange={(e) => setMedicineName(e.target.value)}
             placeholder="진짜 밥먹기"
           />
         </div>
 
         <div>
-          <label htmlFor="diseaseName">방장 이름: </label>
+          <label htmlFor="masterName">방장 이름: </label>
           <input
-            id="diseaseName"
+            id="masterName"
             type="text"
-            value={diseaseName}
+            value={masterName}
             onChange={(e) => setDiseaseName(e.target.value)}
             placeholder="홍길동"
           />
