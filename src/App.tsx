@@ -1,14 +1,19 @@
-// src/App.tsx
 import React, { useState } from "react";
-import Home from "./components/memberA/Home"; // 💡 팀원 A의 홈 화면 추가!
-import ResultView from "./components/memberB/ResultView";
-import ScheduleInput from "./components/memberB/ScheduleInput";
+import Home from "./components/memberA/Home";
+import Join from "./components/memberA/Join";
+import Make from "./components/memberA/Make";
+import Meeting_Details from "./components/memberA/Meeting_Details";
 import { useRoom } from "./hooks/useRoom";
 
-export default function App() {
-  // 1. 화면 단계 상태에 'HOME'을 새로 추가했습니다! (기본값을 'HOME'으로 설정)
-  const [currentStep, setCurrentStep] = useState<"HOME" | "INPUT" | "RESULT">("HOME");
+export type PageState = "Home" | "Join" | "Make" | "Meeting_Details";
 
+export default function App() {
+  const [currentPage, setCurrentPage] = useState<PageState>("Home");
+  
+  // 💡 사용자가 선택하거나 생성한 방 코드를 추적 관리합니다.
+  const [activeRoomCode, setActiveRoomCode] = useState<string | null>(null);
+
+  // 💡 커스텀 훅에 현재 활성화된 방 코드를 주입하여 데이터를 유기적으로 끌어옵니다.
   const {
     roomData,
     editingName,
@@ -16,78 +21,60 @@ export default function App() {
     submitSchedule,
     deleteParticipant,
     startEdit,
-  } = useRoom();
+    addBucketItem,
+    toggleVote,
+    deleteBucketItem,
+  } = useRoom(activeRoomCode);
+
+  // [방 입장 핸들러] 자식 컴포넌트로부터 코드를 받아 연동
+  const handleJoinRoom = (code: string) => {
+    const checkRoom = localStorage.getItem(code);
+    if (!checkRoom) {
+      alert("존재하지 않는 약속 방 코드입니다!");
+      return;
+    }
+    setActiveRoomCode(code);
+    setCurrentPage("Meeting_Details");
+  };
+
+  // [방 생성 핸들러] 방이 새로 만들어졌을 때 코드를 넘겨받아 즉시 대시보드로 이동
+  const handleRoomCreated = (code: string) => {
+    setActiveRoomCode(code);
+    setCurrentPage("Meeting_Details");
+  };
 
   return (
-    <div className="min-h-screen bg-slate-100 py-10 px-4 font-sans">
+    <>
+      {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
       
-      {/* 🛠️ 확장된 상단 임시 스위치 탭 (팀원 A의 Home까지 편하게 테스트 가능!) */}
-      <div className="max-w-md mx-auto mb-8 flex bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
-        <button
-          onClick={() => setCurrentStep("HOME")}
-          className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${
-            currentStep === "HOME"
-              ? "bg-slate-900 text-white shadow-sm"
-              : "text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          🏠 홈 화면 (멤버A)
-        </button>
-        <button
-          onClick={() => setCurrentStep("INPUT")}
-          className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${
-            currentStep === "INPUT"
-              ? "bg-slate-900 text-white shadow-sm"
-              : "text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          📝 일정 입력 (멤버B)
-        </button>
-        <button
-          onClick={() => setCurrentStep("RESULT")}
-          className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${
-            currentStep === "RESULT"
-              ? "bg-slate-900 text-white shadow-sm"
-              : "text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          📊 결과 확인 (멤버B)
-        </button>
-      </div>
-
-      {/* 🧩 메인 화면 조건부 조립 영역 */}
-      <main className="container mx-auto">
-        {currentStep === "HOME" && (
-          <Home />
-        )}
-
-        {currentStep === "INPUT" && (
-          <ScheduleInput
-            roomData={roomData}
-            onSubmitSchedule={(name, dates) => {
-              submitSchedule(name, dates);
-              setCurrentStep("RESULT");
-            }}
-            editingName={editingName}
-            mySavedName={mySavedName}
-          />
-        )}
-
-        {currentStep === "RESULT" && (
-          <ResultView
-            roomData={roomData}
-            mySavedName={mySavedName}
-            onEditParticipant={(name) => {
-              startEdit(name);
-              setCurrentStep("INPUT");
-            }}
-            onDeleteParticipant={(name) => {
-              deleteParticipant(name);
-              setCurrentStep("INPUT");
-            }}
-          />
-        )}
-      </main>
-    </div>
+      {currentPage === "Join" && (
+        <Join 
+          setCurrentPage={setCurrentPage} 
+          onJoinRoom={handleJoinRoom} // 팀원분 Join 컴포넌트에 이 이벤트 핸들러만 연결해 주면 끝!
+        />
+      )}
+      
+      {currentPage === "Make" && (
+        <Make 
+          setCurrentPage={setCurrentPage} 
+          onRoomCreated={handleRoomCreated} // 방 생성 시 코드를 받아오도록 연동
+        />
+      )}
+      
+      {currentPage === "Meeting_Details" && roomData && (
+        <Meeting_Details
+          setCurrentPage={setCurrentPage}
+          roomData={roomData}
+          mySavedName={mySavedName}
+          editingName={editingName}
+          submitSchedule={submitSchedule}
+          deleteParticipant={deleteParticipant}
+          startEdit={startEdit}
+          addBucketItem={addBucketItem}
+          toggleVote={toggleVote}
+          deleteBucketItem={deleteBucketItem}
+        />
+      )}
+    </>
   );
 }

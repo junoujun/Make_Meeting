@@ -1,10 +1,13 @@
+// src/components/memberA/Make.tsx (또는 올바른 경로)
 import type { PageState } from "../../App";
 import DateRangeSelector from "./DateRangeSelector";
 import { useState } from "react";
 import type { RoomData } from "../../types";
 
-type LoginProps = {
+// 💡 Props 타입 정의에 onRoomCreated 함수를 추가합니다!
+type MakeProps = {
   setCurrentPage: React.Dispatch<React.SetStateAction<PageState>>;
+  onRoomCreated: (code: string) => void; 
 };
 
 type DateRange = {
@@ -12,7 +15,7 @@ type DateRange = {
   endDate: string;
 };
 
-export default function Make({ setCurrentPage }: LoginProps) {
+export default function Make({ setCurrentPage, onRoomCreated }: MakeProps) {
   const [promiseName, setMedicineName] = useState("");
   const [masterName, setDiseaseName] = useState("");
 
@@ -22,8 +25,15 @@ export default function Make({ setCurrentPage }: LoginProps) {
   });
 
   const handleCreateRoom = () => {
+    if (!promiseName.trim() || !masterName.trim() || !dateRange.startDate || !dateRange.endDate) {
+      alert("모든 빈칸과 날짜 범위를 채워주세요!");
+      return;
+    }
+
+    const roomCode = createRoomCode();
+
     const roomData: RoomData = {
-      roomCode: createRoomCode(),
+      roomCode: roomCode,
       title: promiseName,
       creatorName: masterName,
       dateRange: {
@@ -35,23 +45,21 @@ export default function Make({ setCurrentPage }: LoginProps) {
     };
 
     localStorage.setItem(roomData.roomCode, JSON.stringify(roomData));
-
     console.log(roomData);
+
+    // 💡 [핵심] 방 생성이 성공했음을 부모(App.tsx)에게 알리며 생성된 코드를 넘겨줍니다!
+    onRoomCreated(roomCode); 
   };
 
   const createRoomCode = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
     while (true) {
       let code = "";
-
       for (let i = 0; i < 4; i++) {
         const randomIndex = Math.floor(Math.random() * chars.length);
         code += chars[randomIndex];
       }
-
       const savedRoom = localStorage.getItem(code);
-
       if (savedRoom === null) {
         return code;
       }
