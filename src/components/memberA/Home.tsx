@@ -22,6 +22,9 @@ export default function Home({ setCurrentPage }: LoginProps) {
           <button onClick={() => setCurrentPage("Join")}>
             코드로 입장하기
           </button>
+          <button onClick={() => setCurrentPage("Meeting_Details")}>
+            약속 세부사항
+          </button>
         </div>
       </div>
     </>
