@@ -4,12 +4,13 @@ import Join from "./components/memberA/Join";
 import Make from "./components/memberA/Make";
 import Meeting_Details from "./components/memberA/Meeting_Details";
 import { useRoom } from "./hooks/useRoom";
+import { getRoom } from "./services/Roomservice";
 
 export type PageState = "Home" | "Join" | "Make" | "Meeting_Details";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageState>("Home");
-  
+
   // 💡 사용자가 선택하거나 생성한 방 코드를 추적 관리합니다.
   const [activeRoomCode, setActiveRoomCode] = useState<string | null>(null);
 
@@ -27,13 +28,13 @@ export default function App() {
   } = useRoom(activeRoomCode);
 
   // [방 입장 핸들러] 자식 컴포넌트로부터 코드를 받아 연동
-  const handleJoinRoom = (code: string) => {
-    const checkRoom = localStorage.getItem(code);
-    if (!checkRoom) {
+  const handleJoinRoom = async (code: string) => {
+    const room = await getRoom(code);
+    if (!room) {
       alert("존재하지 않는 약속 방 코드입니다!");
       return;
     }
-    setActiveRoomCode(code);
+    setActiveRoomCode(code); //DB 연동으로 변경된 부분
     setCurrentPage("Meeting_Details");
   };
 
@@ -45,22 +46,24 @@ export default function App() {
 
   return (
     <>
+      {/*<button onClick={testFirebaseConnection}> firebase test</button>*/}
+
       {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
-      
+
       {currentPage === "Join" && (
-        <Join 
-          setCurrentPage={setCurrentPage} 
+        <Join
+          setCurrentPage={setCurrentPage}
           onJoinRoom={handleJoinRoom} // 팀원분 Join 컴포넌트에 이 이벤트 핸들러만 연결해 주면 끝!
         />
       )}
-      
+
       {currentPage === "Make" && (
-        <Make 
-          setCurrentPage={setCurrentPage} 
+        <Make
+          setCurrentPage={setCurrentPage}
           onRoomCreated={handleRoomCreated} // 방 생성 시 코드를 받아오도록 연동
         />
       )}
-      
+
       {currentPage === "Meeting_Details" && roomData && (
         <Meeting_Details
           setCurrentPage={setCurrentPage}
