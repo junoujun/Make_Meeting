@@ -1,5 +1,5 @@
 // src/components/Home.tsx
-import type { PageState } from "../App";
+import type { PageState } from "../../App";
 
 type LoginProps = {
   setCurrentPage: React.Dispatch<React.SetStateAction<PageState>>;
