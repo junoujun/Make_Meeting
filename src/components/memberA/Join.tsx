@@ -17,6 +17,16 @@ export default function Join({ setCurrentPage, onJoinRoom }: JoinProps) {
     onJoinRoom(roomCode.trim().toUpperCase());
   };
 
+  const handleJoinEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      if (!roomCode.trim()) {
+        alert("방 코드를 입력해주세요!");
+        return;
+      }
+      onJoinRoom(roomCode.trim().toUpperCase());
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto bg-white p-8 rounded-3xl border border-slate-200/80 shadow-md my-16 space-y-6">
       {/* 상단 뒤로가기 겸 로고 */}
@@ -47,6 +57,7 @@ export default function Join({ setCurrentPage, onJoinRoom }: JoinProps) {
           onChange={(e) => setRoomCode(e.target.value)}
           placeholder="예: X7B9"
           className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-center text-lg font-black tracking-widest text-slate-800 uppercase focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+          onKeyDown={handleJoinEnter}
         />
 
         <button
