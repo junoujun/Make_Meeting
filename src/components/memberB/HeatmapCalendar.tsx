@@ -10,11 +10,9 @@ export default function HeatmapCalendar({ roomData }: Props) {
   const { participants, dateRange } = roomData;
   const totalUsers = participants.length;
 
-  // 1. dateMemo.ts 유틸을 사용해 날짜별 투표수 집계하기
-  // 결과 예시: { '2026-06-22': 1, '2026-06-23': 2, '2026-06-24': 3, ... }
   const dateCounts = calculateDateCounts(participants);
 
-  // 2. 2026년 6월 달력 데이터 하드코딩 (방장이 지정한 월에 맞게 최소한으로 구현)
+  // 2026년 6월 달력 데이터
   const year = 2026;
   const month = 6;
   const totalDays = 30; // 6월은 30일까지
@@ -28,13 +26,12 @@ export default function HeatmapCalendar({ roomData }: Props) {
   const days = Array.from({ length: totalDays }, (_, i) => i + 1);
   const calendarCells = [...blanks, ...days];
 
-  // 3. 투표수 및 방장 설정 범위에 따라 Tailwind 색상 클래스를 반환하는 함수
   const getCellStyling = (dateStr: string, count: number) => {
     // 방장이 지정한 날짜 범위 내에 있는지 확인
     const isWithinRange =
       dateStr >= dateRange.start && dateStr <= dateRange.end;
 
-    // 범위 밖의 날짜는 비활성화 투명 처리
+    // 범위 밖의 날짜는 비활성화
     if (!isWithinRange) {
       return "bg-gray-50 text-gray-300 opacity-40";
     }
@@ -44,11 +41,11 @@ export default function HeatmapCalendar({ roomData }: Props) {
       return "bg-slate-100 text-slate-400 hover:bg-slate-200/70 cursor-pointer";
     }
 
-    // 투표 비율에 따른 히트맵 색상 분기 (제시해주신 이미지 기준 반영)
+    // 투표 비율에 따른 히트맵 색상 분기
     const ratio = count / totalUsers;
-    if (ratio === 1) return "bg-slate-900 text-white font-bold shadow-md"; // 3명 전원 (짙은 남색)
-    if (ratio >= 0.6) return "bg-blue-600 text-white font-semibold"; // 2명 가능 (중간 파랑)
-    return "bg-sky-300 text-sky-950 font-medium"; // 1명 가능 (연한 하늘색)
+    if (ratio === 1) return "bg-slate-900 text-white font-bold shadow-md"; // 3명 가능
+    if (ratio >= 0.6) return "bg-blue-600 text-white font-semibold"; // 2명 가능
+    return "bg-sky-300 text-sky-950 font-medium"; // 1명 가능
   };
 
   return (
@@ -97,7 +94,6 @@ export default function HeatmapCalendar({ roomData }: Props) {
               return <div key={`empty-${index}`} className="p-2" />; // 빈칸 공백 처리
             }
 
-            // 날짜 비교를 위해 '2026-06-05' 형태로 포맷팅
             const formattedDay = day < 10 ? `0${day}` : `${day}`;
             const dateStr = `${year}-0${month}-${formattedDay}`;
             const count = dateCounts[dateStr] || 0;

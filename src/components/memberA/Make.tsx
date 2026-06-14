@@ -80,9 +80,6 @@ export default function Make({ setCurrentPage, onRoomCreated }: MakeProps) {
         <h1 className="text-xl font-black text-slate-900">
           ✨ 새로운 약속방 만들기
         </h1>
-        <p className="text-xs text-slate-400 font-medium">
-          친구들을 초대할 모임의 기본 틀을 생성합니다.
-        </p>
       </div>
 
       {/* 입력 섹션 */}

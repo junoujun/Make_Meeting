@@ -3,7 +3,6 @@ export interface Participant {
   availableDates: string[];
 }
 
-// 💡 팀원분의 기획을 반영하여 버킷리스트 아이템 타입 확장
 export interface BucketItem {
   id: string;
   content: string; // 하고 싶은 일

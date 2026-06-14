@@ -11,10 +11,10 @@ export type PageState = "Home" | "Join" | "Make" | "Meeting_Details";
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageState>("Home");
 
-  // 💡 사용자가 선택하거나 생성한 방 코드를 추적 관리합니다.
+  // 사용자가 선택하거나 생성한 방 코드 추적 관리
   const [activeRoomCode, setActiveRoomCode] = useState<string | null>(null);
 
-  // 💡 커스텀 훅에 현재 활성화된 방 코드를 주입하여 데이터를 유기적으로 끌어옵니다.
+  //커스텀 훅에 현재 활성화된 방 코드 주입
   const {
     roomData,
     editingName,
@@ -27,7 +27,7 @@ export default function App() {
     deleteBucketItem,
   } = useRoom(activeRoomCode);
 
-  // [방 입장 핸들러] 자식 컴포넌트로부터 코드를 받아 연동
+  // 방 입장 핸들러
   const handleJoinRoom = async (code: string) => {
     const room = await getRoom(code);
     if (!room) {
@@ -38,7 +38,7 @@ export default function App() {
     setCurrentPage("Meeting_Details");
   };
 
-  // [방 생성 핸들러] 방이 새로 만들어졌을 때 코드를 넘겨받아 즉시 대시보드로 이동
+  // 방 생성 핸들러
   const handleRoomCreated = (code: string) => {
     setActiveRoomCode(code);
     setCurrentPage("Meeting_Details");
@@ -51,16 +51,13 @@ export default function App() {
       {currentPage === "Home" && <Home setCurrentPage={setCurrentPage} />}
 
       {currentPage === "Join" && (
-        <Join
-          setCurrentPage={setCurrentPage}
-          onJoinRoom={handleJoinRoom} // 팀원분 Join 컴포넌트에 이 이벤트 핸들러만 연결해 주면 끝!
-        />
+        <Join setCurrentPage={setCurrentPage} onJoinRoom={handleJoinRoom} />
       )}
 
       {currentPage === "Make" && (
         <Make
           setCurrentPage={setCurrentPage}
-          onRoomCreated={handleRoomCreated} // 방 생성 시 코드를 받아오도록 연동
+          onRoomCreated={handleRoomCreated}
         />
       )}
 

@@ -16,7 +16,7 @@ interface Props {
   deleteBucketItem: (id: string) => void;
 }
 
-// 💡 3개의 큰 메인 창을 정의하는 타입
+// 3개의 큰 메인 창을 정의하는 타입
 type DetailTabState = "INPUT" | "RESULT" | "BUCKET";
 
 export default function Meeting_Details({
@@ -31,7 +31,7 @@ export default function Meeting_Details({
   toggleVote,
   deleteBucketItem,
 }: Props) {
-  // 💡 기본 화면을 내 이름 저장 여부에 따라 스마트하게 지정
+  // 기본 화면을 내 이름 저장 여부에 따라 지정
   const [activeTab, setActiveTab] = useState<DetailTabState>(
     mySavedName ? "RESULT" : "INPUT",
   );
@@ -51,7 +51,7 @@ export default function Meeting_Details({
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6 font-sans">
-      {/* ─── 상단 글로벌 헤더 (서비스 로고 & 룸 코드) ─── */}
+      {/* 서비스 로고 & 룸 코드 */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-4">
         <div>
           <button
@@ -66,7 +66,7 @@ export default function Meeting_Details({
         </div>
       </div>
 
-      {/* ─── 🌟 대형 3단 탭 네비게이션 바 (크게 크게 움직이는 영역) ─── */}
+      {/* 탭 네비게이션 바 */}
       <div className="grid grid-cols-3 bg-slate-100 p-1.5 rounded-2xl border border-slate-200/50 shadow-inner">
         <button
           onClick={() => setActiveTab("INPUT")}
@@ -100,7 +100,7 @@ export default function Meeting_Details({
         </button>
       </div>
 
-      {/* ─── 🧩 메인 대형 창 렌더링 스페이스 ─── */}
+      {/* 메인 대형 창  */}
       <main className="min-h-[50vh] transition-all duration-300">
         {/* 1번 창: 내 일정 입력 */}
         {activeTab === "INPUT" && (
@@ -109,7 +109,7 @@ export default function Meeting_Details({
               roomData={roomData}
               onSubmitSchedule={(name, dates) => {
                 submitSchedule(name, dates);
-                setActiveTab("RESULT"); // 일정 제출하면 결과 대시보드 창으로 크게 슥 이동
+                setActiveTab("RESULT");
               }}
               editingName={editingName}
               mySavedName={mySavedName}
@@ -132,7 +132,7 @@ export default function Meeting_Details({
           </div>
         )}
 
-        {/* 3번 창: ✨ 완전히 독자적인 창으로 격리된 버킷리스트 세션 */}
+        {/* 3번 창: 버킷리스트 세션 */}
         {activeTab === "BUCKET" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start animate-fade-in">
             {/* 왼쪽: 버킷리스트 작성 카드 */}
@@ -170,7 +170,7 @@ export default function Meeting_Details({
               </div>
             </div>
 
-            {/* 오른쪽: 버킷리스트 목록 카드 대형 스페이스 */}
+            {/* 오른쪽: 버킷리스트 목록 */}
             <div className="md:col-span-2 bg-white p-6 rounded-3xl border border-slate-200/60 shadow-md">
               <h2 className="font-black text-slate-900 text-base mb-4 flex items-center gap-1.5">
                 📜 친구들의 아이디어 명단

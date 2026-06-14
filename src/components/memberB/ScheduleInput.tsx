@@ -8,22 +8,28 @@ interface Props {
   mySavedName: string | null;
 }
 
-export default function ScheduleInput({ roomData, onSubmitSchedule, editingName, mySavedName }: Props) {
+export default function ScheduleInput({
+  roomData,
+  onSubmitSchedule,
+  editingName,
+  mySavedName,
+}: Props) {
   const { dateRange, title, participants } = roomData;
 
-  // 1. [useEffect 지우기] 대신, 수정 타겟 이름을 먼저 찾습니다.
+  // 수정 타겟 이름 찾기
   const targetName = editingName || mySavedName;
-  const existingUser = targetName ? participants.find(p => p.name === targetName) : null;
+  const existingUser = targetName
+    ? participants.find((p) => p.name === targetName)
+    : null;
 
-  // 2. useState 초기값 안에서 바로 데이터를 삼항연산자로 꽂아줍니다!
-  // 기존에 저장된 유저가 있으면 그 이름을 쓰고, 없으면 빈 문자열('')을 씁니다.
-  const [name, setName] = useState(existingUser ? existingUser.name : '');
-  
-  // 날짜도 마찬가지로 기존 유저가 있으면 그 일정을, 없으면 빈 배열([])을 씁니다.
+  // 기존에 저장된 유저가 있으면 그 이름 없으면 빈 문자열('')
+  const [name, setName] = useState(existingUser ? existingUser.name : "");
+
+  // 날짜도 마찬가지로 기존 유저가 있으면 그 일정, 없으면 빈 배열
   const [selectedDates, setSelectedDates] = useState<string[]>(
-    existingUser ? existingUser.availableDates : []
+    existingUser ? existingUser.availableDates : [],
   );
-  // 2. 달력 그리기 및 요일 매칭에 필요한 핵심 변수 정의 (6월 기준)
+  // 달력 그리기 및 요일 매칭에 필요한 핵심 변수 정의
   const year = 2026;
   const month = 6;
   const totalDays = 30;
@@ -34,8 +40,7 @@ export default function ScheduleInput({ roomData, onSubmitSchedule, editingName,
   const days = Array.from({ length: totalDays }, (_, i) => i + 1);
   const calendarCells = [...blanks, ...days];
 
-
-  // 3. 날짜 클릭 시 선택 상태를 토글하는 함수 채워넣기
+  // 날짜 클릭 시 선택 상태를 토글하는 함수 채워넣기
   const handleDateClick = (dateStr: string, isWithinRange: boolean) => {
     if (!isWithinRange) return;
 
@@ -46,7 +51,7 @@ export default function ScheduleInput({ roomData, onSubmitSchedule, editingName,
     }
   };
 
-  // 4. 폼 제출(Submit) 핸들러 함수 채워넣기
+  // 폼 제출 핸들러 함수 채워넣기
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
@@ -58,7 +63,7 @@ export default function ScheduleInput({ roomData, onSubmitSchedule, editingName,
       return;
     }
 
-    // 부모(App.tsx)로 데이터 전달
+    // App.tsx로 데이터 전달
     onSubmitSchedule(name.trim(), selectedDates);
   };
 
@@ -89,7 +94,7 @@ export default function ScheduleInput({ roomData, onSubmitSchedule, editingName,
             placeholder="이름을 입력하세요 (예: 홍길동)"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            disabled={!!editingName || !!mySavedName} // 수정 중일 때는 이름 변경 방지 (보안/데이터 매칭용)
+            disabled={!!editingName || !!mySavedName} // 수정 중일 때는 이름 변경 방지
             className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed"
           />
         </div>
