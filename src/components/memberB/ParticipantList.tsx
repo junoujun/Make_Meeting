@@ -1,4 +1,3 @@
-import React from "react";
 import { type Participant } from "../../types";
 
 interface Props {

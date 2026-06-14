@@ -1,4 +1,3 @@
-import React from "react";
 import { type Participant } from "../../types";
 import { getTopDates } from "../../utils/dateMemo";
 

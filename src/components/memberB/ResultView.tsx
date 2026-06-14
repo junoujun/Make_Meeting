@@ -1,4 +1,3 @@
-import React from "react";
 import type { RoomData } from "../../types";
 import RankingBoard from "./RankingBoard";
 import ParticipantList from "./ParticipantList";

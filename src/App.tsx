@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Home from "./components/memberA/Home";
 import Join from "./components/memberA/Join";
 import Make from "./components/memberA/Make";
